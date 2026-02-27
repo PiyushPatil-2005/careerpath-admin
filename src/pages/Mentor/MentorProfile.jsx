@@ -11,38 +11,101 @@ const MentorProfile = () => {
 
   const [isEdit, setIsEdit] = useState(false)
 
+  const [announcements, setAnnouncements] = useState([]);
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+  const [showAnnouncementForm, setShowAnnouncementForm] = useState(false);
+
+
   const updateProfile = async () => {
 
     try {
-      
+
       const updateData = {
         about: profileData.about,
         fees: profileData.fees,
         available: profileData.available
       }
 
-      const { data } = await axios.post(backendUrl + '/api/mentor/update-profile', updateData, {headers: {mToken}})
+      const { data } = await axios.post(backendUrl + '/api/mentor/update-profile', updateData, { headers: { mToken } })
 
-      if(data.success) {
+      if (data.success) {
         toast.success(data.message)
         setIsEdit(false)
         getProfileData()
       } else {
         toast.error(data.message)
       }
-      
+
     } catch (error) {
       toast.error(error.message)
       console.log(error)
     }
   }
-  
+
+  const createAnnouncement = async () => {
+    try {
+      const { data } = await axios.post(
+        backendUrl + '/api/mentor/create-announcement',
+        { title, message },
+        { headers: { mToken } }
+      );
+
+      if (data.success) {
+        toast.success("Announcement Created");
+        setTitle("");
+        setMessage("");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  }
+
+  const getMyAnnouncements = async () => {
+    try {
+      const { data } = await axios.get(
+        backendUrl + '/api/mentor/my-announcements',
+        { headers: { mToken } }
+      );
+
+      if (data.success) {
+        setAnnouncements(data.announcements);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const deleteAnnouncement = async (announcementId) => {
+    try {
+      const { data } = await axios.post(
+        backendUrl + '/api/mentor/delete-announcement',
+        { announcementId },
+        { headers: { mToken } }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        getMyAnnouncements(); // refresh list
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  }
+
   useEffect(() => {
     if (mToken) {
       getProfileData()
+      getMyAnnouncements()
     }
   }, [mToken])
-  
+
   return profileData && (
     <div>
       <div className='flex flex-col gap-4 m-5'>
@@ -119,12 +182,94 @@ const MentorProfile = () => {
             )}
           </div>
 
-          {
-            isEdit
-            ? <button onClick={updateProfile} className='px-6 py-2 border border-[#5f6FFF] rounded-full mt-5 hover:bg-[#5f6FFF] hover:text-white transition-all cursor-pointer'>Save</button>
-            : <button onClick={()=> setIsEdit(true)} className='px-6 py-2 border border-[#5f6FFF] rounded-full mt-5 hover:bg-[#5f6FFF] hover:text-white transition-all cursor-pointer'>Edit</button>
-          }
+          <div className="flex gap-3 mt-5">
+            {
+              isEdit
+                ? <button
+                  onClick={updateProfile}
+                  className='px-6 py-2 border border-[#5f6FFF] rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all cursor-pointer'>
+                  Save
+                </button>
+                : <button
+                  onClick={() => setIsEdit(true)}
+                  className='px-6 py-2 border border-[#5f6FFF] rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all cursor-pointer'>
+                  Edit
+                </button>
+            }
 
+            {/* NEW BUTTON */}
+            <button
+              onClick={() => setShowAnnouncementForm(prev => !prev)}
+              className='px-6 py-2 border border-green-500 text-green-600 rounded-full hover:bg-green-500 hover:text-white transition-all cursor-pointer'
+            >
+              {showAnnouncementForm ? "Close Announcement" : "Create Announcement"}
+            </button>
+          </div>
+          {/* ================= Mentor Announcements List ================= */}
+          {announcements.length > 0 && (
+            <div className="mt-8 border-t pt-6">
+              <h2 className="text-xl font-semibold text-gray-700 mb-3">
+                Your Announcements
+              </h2>
+
+              <div className="flex flex-col gap-3">
+                {announcements.map((item) => (
+                  <div
+                    key={item._id}
+                    className="border p-4 rounded-lg flex justify-between items-start"
+                  >
+                    <div>
+                      <p className="font-semibold text-gray-800">{item.title}</p>
+                      <p className="text-sm text-gray-600">{item.message}</p>
+                    </div>
+
+                    <button
+                      onClick={() => deleteAnnouncement(item._id)}
+                      className="text-red-500 border border-red-400 px-3 py-1 rounded-full hover:bg-red-500 hover:text-white"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Announcement Section */}
+          {showAnnouncementForm && (
+            <div className="mt-8 border-t pt-6">
+              <h2 className="text-xl font-semibold text-gray-700 mb-3">
+                Create Announcement
+              </h2>
+
+              <div className="flex flex-col gap-3">
+                <input
+                  type="text"
+                  placeholder="Announcement Title (e.g. 20% Off on Sunday)"
+                  className="border p-2 rounded-md"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+
+                <textarea
+                  placeholder="Write announcement message..."
+                  className="border p-2 rounded-md"
+                  rows={3}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+
+                <button
+                  onClick={createAnnouncement}
+                  className="bg-[#5F6FFF] text-white px-6 py-2 rounded-full w-fit"
+                >
+                  Post Announcement
+                </button>
+              </div>
+            </div>
+          )}
+
+          
         </div>
       </div>
     </div>
