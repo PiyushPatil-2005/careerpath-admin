@@ -6,82 +6,96 @@ import axios from 'axios'
 
 const AddMentor = () => {
 
-    const [menImg, setMenImg] = useState(false)
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [gender, setGender] = useState('')
-    const [dob, setDob] = useState('')
-    const [phone, setPhone] = useState('')
-    const [speciality, setSpeciality] = useState('Engineering')
-    const [college, setCollege] = useState('')
-    const [degree, setDegree] = useState('')
-    const [collegeStartYear, setCollegeStartYear] = useState('')
-    const [collegeEndYear, setCollegeEndYear] = useState('')
-    const [fees, setFees] = useState('')
-    const [about, setAbout] = useState('')
+  const [menImg, setMenImg] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [gender, setGender] = useState('')
+  const [dob, setDob] = useState('')
+  const [phone, setPhone] = useState('')
+  const [speciality, setSpeciality] = useState('Engineering')
+  const [college, setCollege] = useState('')
+  const [degree, setDegree] = useState('')
+  const [collegeStartYear, setCollegeStartYear] = useState('')
+  const [collegeEndYear, setCollegeEndYear] = useState('')
+  // const [fees, setFees] = useState('')
+  const [sessions, setSessions] = useState([
+    { name: "", fee: "" }
+  ])
+  const [about, setAbout] = useState('')
 
-    const { backendUrl, aToken } = useContext(AdminContext)
-    
-    const onSubmitHandler = async (event) => {
-      event.preventDefault()
+  const { backendUrl, aToken } = useContext(AdminContext)
 
-      try {
+  const addSession = () => {
+    setSessions([...sessions, { name: "", fee: "" }])
+  }
 
-        if(!menImg) {
-          return toast.error('Image Not Selected')
-        }
+  const updateSession = (index, field, value) => {
+    const updated = [...sessions]
+    updated[index][field] = value
+    setSessions(updated)
+  }
 
-        const formData = new FormData()
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
 
-        formData.append('image', menImg)
-        formData.append('name', name)
-        formData.append('email', email)
-        formData.append('password', password)
-        formData.append('gender', gender)
-        formData.append('dob', dob)
-        formData.append('phone', phone)
-        formData.append('speciality', speciality)
-        formData.append('collegeName', college)
-        formData.append('degree', degree)
-        formData.append('collegeStartYear', collegeStartYear)
-        formData.append('collegeEndYear', collegeEndYear)
-        formData.append('fees', fees)
-        formData.append('about', about)
+    try {
 
-        // console.log(...formData);
-
-        formData.forEach((value, key) => {
-          console.log(`${key} : ${value}`)
-        })
-
-        const {data} = await axios.post(backendUrl + '/api/admin/add-mentor', formData, { headers: { aToken }} )
-        if(data.success) {
-          toast.success(data.message)
-          setMenImg(false)
-          setName('')
-          setEmail('')
-          setPassword('')
-          setGender('')
-          setDob('')
-          setPhone('')
-          setSpeciality('Engineering')
-          setCollege('')
-          setDegree('')
-          setCollegeStartYear('')
-          setCollegeEndYear('')
-          setFees('')
-          setAbout('')
-        } else {
-          toast.error(data.message)
-        }
-
-      } catch (error) {
-        toast.error(error.message)
-        console.error(error)
+      if (!menImg) {
+        return toast.error('Image Not Selected')
       }
 
+      const formData = new FormData()
+
+      formData.append('image', menImg)
+      formData.append('name', name)
+      formData.append('email', email)
+      formData.append('password', password)
+      formData.append('gender', gender)
+      formData.append('dob', dob)
+      formData.append('phone', phone)
+      formData.append('speciality', speciality)
+      formData.append('collegeName', college)
+      formData.append('degree', degree)
+      formData.append('collegeStartYear', collegeStartYear)
+      formData.append('collegeEndYear', collegeEndYear)
+      // formData.append('fees', fees)
+      formData.append("sessions", JSON.stringify(sessions))
+      formData.append('about', about)
+
+      // console.log(...formData);
+
+      formData.forEach((value, key) => {
+        console.log(`${key} : ${value}`)
+      })
+
+      const { data } = await axios.post(backendUrl + '/api/admin/add-mentor', formData, { headers: { aToken } })
+      if (data.success) {
+        toast.success(data.message)
+        setMenImg(false)
+        setName('')
+        setEmail('')
+        setPassword('')
+        setGender('')
+        setDob('')
+        setPhone('')
+        setSpeciality('Engineering')
+        setCollege('')
+        setDegree('')
+        setCollegeStartYear('')
+        setCollegeEndYear('')
+        setSessions([{ name: "", fee: "" }])
+        setAbout('')
+      } else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.error(error)
     }
+
+  }
 
   return (
     <form onSubmit={onSubmitHandler} action="" className='m-5 w-full'>
@@ -91,9 +105,9 @@ const AddMentor = () => {
       <div className='bg-white px-8 py-8 border rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll'>
         <div className='flex items-center gap-4 mb-8 text-gray-500'>
           <label htmlFor="men-img">
-            <img className='w-25 bg-gray-100 rounded-full cursor-pointer' src={ menImg ? URL.createObjectURL(menImg) : assets.upload_area} alt="" />
+            <img className='w-25 bg-gray-100 rounded-full cursor-pointer' src={menImg ? URL.createObjectURL(menImg) : assets.upload_area} alt="" />
           </label>
-          <input onChange={(e)=>setMenImg(e.target.files[0])} type="file" id='men-img'  />
+          <input onChange={(e) => setMenImg(e.target.files[0])} type="file" id='men-img' />
           <p>Upload Mentor <br /> Picture </p>
         </div>
 
@@ -109,7 +123,7 @@ const AddMentor = () => {
               <p>Mentor Email</p>
               <input onChange={(e) => setEmail(e.target.value)} value={email} className='border rounded px-3 py-2' type="email" placeholder='Email' required />
             </div>
-            
+
             <div className='flex-1 flex flex-col gap-1'>
               <p>Mentor Password</p>
               <input onChange={(e) => setPassword(e.target.value)} value={password} className='border rounded px-3 py-2' type="password" placeholder='Name' required />
@@ -134,7 +148,7 @@ const AddMentor = () => {
               <p>Phone Number</p>
               <input onChange={(e) => setPhone(e.target.value)} value={phone} className='border rounded px-3 py-2' type="number" placeholder='phone number' required />
             </div>
-            
+
           </div>
 
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
@@ -150,7 +164,7 @@ const AddMentor = () => {
                 <option value="Arts">Arts</option>
               </select>
             </div>
-            
+
             <div className='flex-1 flex flex-col gap-1'>
               <p>Mentor College Name</p>
               <input onChange={(e) => setCollege(e.target.value)} value={college} className='border rounded px-3 py-2' type="text" placeholder='College Name' required />
@@ -163,23 +177,56 @@ const AddMentor = () => {
 
             <div className='flex-1 flex flex-col gap-1'>
               <label>College Duration:</label>
-                {/* Start Year */}
-                <input onChange={(e) => setCollegeStartYear(e.target.value)} value={collegeStartYear} className='border rounded px-3 py-2' type="number" name="collegeStartYear" placeholder="Start Year" min="2000" max="2024" pattern="20[0-9]{2}" required />
-                {/* End Year */}
-                <input onChange={(e) => setCollegeEndYear(e.target.value)} value={collegeEndYear} className='border rounded px-3 py-2' type="number" name="collegeEndYear" placeholder="End Year" min="2001" max="2033" pattern="20[0-9]{2}" required />
+              {/* Start Year */}
+              <input onChange={(e) => setCollegeStartYear(e.target.value)} value={collegeStartYear} className='border rounded px-3 py-2' type="number" name="collegeStartYear" placeholder="Start Year" min="2000" max="2024" pattern="20[0-9]{2}" required />
+              {/* End Year */}
+              <input onChange={(e) => setCollegeEndYear(e.target.value)} value={collegeEndYear} className='border rounded px-3 py-2' type="number" name="collegeEndYear" placeholder="End Year" min="2001" max="2033" pattern="20[0-9]{2}" required />
             </div>
 
             <div className='flex-1 flex flex-col gap-1'>
-              <p>Fees</p>
-              <input onChange={(e) => setFees(e.target.value)} value={fees} className='border rounded px-3 py-2' type="number" placeholder='fees' required />
+              <p>Sessions</p>
+
+              {sessions.map((session, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+
+                  <input
+                    type="text"
+                    placeholder="Session Name"
+                    value={session.name}
+                    onChange={(e) =>
+                      updateSession(index, "name", e.target.value)
+                    }
+                    className="border px-3 py-2 rounded"
+                  />
+
+                  <input
+                    type="number"
+                    placeholder="Fee"
+                    value={session.fee}
+                    onChange={(e) =>
+                      updateSession(index, "fee", e.target.value)
+                    }
+                    className="border px-3 py-2 rounded"
+                  />
+
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addSession}
+                className="text-blue-600"
+              >
+                + Add Session
+              </button>
             </div>
 
           </div>
         </div>
 
         <div>
-            <p className='mt-4 mb-2'>About Mentor</p>
-            <textarea onChange={(e) => setAbout(e.target.value)} value={about} className='w-full px-4 pt-2 border rounded' placeholder='write about mentor' rows={5}  required/>
+          <p className='mt-4 mb-2'>About Mentor</p>
+          <textarea onChange={(e) => setAbout(e.target.value)} value={about} className='w-full px-4 pt-2 border rounded' placeholder='write about mentor' rows={5} required />
         </div>
 
         <button type='submit' className='bg-[#5F6FFF] px-10 py-3 mt-4 text-white rounded-full cursor-pointer'>Add Mentor</button>
