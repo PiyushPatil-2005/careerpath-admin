@@ -16,57 +16,65 @@ const Dashboard = () => {
   }, [aToken])
 
   return dashData && (
-    <div className='m-5 '>
+    <div className='m-5 animate-fade-up w-full'>
 
-      <div className='flex flex-wrap gap-3'>
+      <div className='flex flex-wrap gap-4'>
 
-        <div className='flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer hover:scale-105 transition-all'>
-          <img className='w-14' src={assets.doctor_icon} alt="" />
+        <div className='flex items-center gap-5 glass-card p-6 min-w-64 rounded-2xl cursor-pointer group flex-1'>
+          <div className='w-14 h-14 bg-indigo-500/20 rounded-full flex items-center justify-center border border-indigo-500/30 group-hover:bg-indigo-500/40 transition-colors'>
+             <img className='w-8 invert opacity-80' src={assets.doctor_icon} alt="" />
+          </div>
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashData.mentors}</p>
-            <p className='text-gray-400'>Mentors</p>
+            <p className='text-3xl font-bold text-white'>{dashData.mentors}</p>
+            <p className='text-slate-400 font-medium tracking-wide text-sm uppercase mt-1'>Mentors</p>
           </div>
         </div>
 
-        <div className='flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer hover:scale-105 transition-all'>
-          <img className='w-14' src={assets.appointments_icon} alt="" />
+        <div className='flex items-center gap-5 glass-card p-6 min-w-64 rounded-2xl cursor-pointer group flex-1'>
+          <div className='w-14 h-14 bg-indigo-500/20 rounded-full flex items-center justify-center border border-indigo-500/30 group-hover:bg-indigo-500/40 transition-colors'>
+             <img className='w-8 invert opacity-80' src={assets.appointments_icon} alt="" />
+          </div>
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashData.appointments}</p>
-            <p className='text-gray-400'>Appointments</p>
+            <p className='text-3xl font-bold text-white'>{dashData.appointments}</p>
+            <p className='text-slate-400 font-medium tracking-wide text-sm uppercase mt-1'>Appointments</p>
           </div>
         </div>
 
-        <div className='flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer hover:scale-105 transition-all'>
-          <img className='w-14' src={assets.patients_icon} alt="" />
+        <div className='flex items-center gap-5 glass-card p-6 min-w-64 rounded-2xl cursor-pointer group flex-1'>
+          <div className='w-14 h-14 bg-indigo-500/20 rounded-full flex items-center justify-center border border-indigo-500/30 group-hover:bg-indigo-500/40 transition-colors'>
+             <img className='w-8 invert opacity-80' src={assets.patients_icon} alt="" />
+          </div>
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashData.users}</p>
-            <p className='text-gray-400'>Users</p>
+            <p className='text-3xl font-bold text-white'>{dashData.users}</p>
+            <p className='text-slate-400 font-medium tracking-wide text-sm uppercase mt-1'>Users</p>
           </div>
         </div>
 
       </div>
 
-      <div className='bg-white'>
-        <div className='flex items-center gap-2.5 px-4 py-4 mt-10 rounded-t border'>
-          <img src={assets.list_icon} alt="" />
-          <p className='font-semibold'>Latest Booking</p>
+      <div className='glass-card mt-8 rounded-2xl overflow-hidden'>
+        <div className='flex items-center gap-3 px-6 py-5 border-b border-white/5 bg-slate-900/50'>
+          <img className='invert opacity-70 w-5' src={assets.list_icon} alt="" />
+          <p className='font-semibold text-lg text-white tracking-wide'>Latest Bookings</p>
         </div>
 
-        <div className='pt-4 border border-t-0'>
+        <div className='pt-2 pb-4'>
           {
             dashData.latestAppointments.map((item, index) => (
-              <div className='flex items-center px-6 py-3 gap-3' key={index}>
-                <img className='rounded-full w-10' src={item.menData.image} alt="" />
-                <div className='flex-1 text-sm'>
-                  <p className='text-gray-800 font-medium'>{item.menData.name}</p>
-                  <p className='text-gray-600'>{slotDateFormat(item.slotDate)}</p>
+              <div className='flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0' key={index}>
+                <div className='flex items-center gap-4'>
+                  <img className='rounded-full w-12 h-12 object-cover border border-white/10 mix-blend-lighten bg-white/10' src={item.menData.image} alt="" />
+                  <div className='text-sm'>
+                    <p className='text-slate-100 font-semibold text-base'>{item.menData.name}</p>
+                    <p className='text-indigo-400 mt-0.5'>{slotDateFormat(item.slotDate)}</p>
+                  </div>
                 </div>
                 {
                   item.cancelled
-                    ? <p className='text-red-400 text-xs font-medium'>Cancelled</p>
+                    ? <p className='text-red-400 text-xs font-bold uppercase tracking-wider bg-red-400/10 px-3 py-1 rounded-full'>Cancelled</p>
                     : item.isCompleted
-                      ? <p className='text-green-500 text-xs font-medium'>Completed</p>
-                      : <img onClick={() => cancelAppointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+                      ? <p className='text-green-400 text-xs font-bold uppercase tracking-wider bg-green-400/10 px-3 py-1 rounded-full'>Completed</p>
+                      : <img onClick={() => cancelAppointment(item._id)} className='w-8 p-1.5 rounded-full cursor-pointer bg-red-500/10 hover:bg-red-500/30 transition-colors opacity-80 hover:opacity-100' src={assets.cancel_icon} alt="" />
                 }
               </div>
             ))

@@ -21,7 +21,7 @@ const App = () => {
   const { mToken } = useContext(MentorContext)
 
   return aToken || mToken ? (
-    <div className='bg-[#F8F9FD]'>
+    <div className='w-full'>
       <ToastContainer />
       <Navbar />
       <div className='flex items-start'>

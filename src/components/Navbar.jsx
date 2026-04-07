@@ -26,12 +26,12 @@ const Navbar = () => {
 
 
   return (
-    <div className='flex justify-between items-center px-4 sm:px-10 py-3 border-b-2 border-gray-300 bg-white'>
-      <div className='flex items-center gap-2 text-xs'>
-        <img className='w-44 h-22 cursor-pointer' src={assets.admin_logo} alt="" />
-        <p className='border px-2.5 py-0.5 rounded-full'>{aToken ? 'Admin' : 'Mentor'}</p>
+    <div className='glass-nav flex items-center justify-between px-6 sm:px-12 py-5 sticky top-0 z-50'>
+      <div className='flex items-center gap-4 text-xs font-semibold'>
+        <img className='w-44 h-auto cursor-pointer hover:opacity-90 transition-opacity' src={assets.admin_logo} alt="" />
+        <p className='border border-indigo-500/50 text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full uppercase tracking-wider'>{aToken ? 'Admin' : 'Mentor'}</p>
       </div>
-      <button onClick={logout} className='bg-[#5F6FFF] text-white test-sm px-10 py-2 rounded-full cursor-pointer'>Logout</button>
+      <button onClick={logout} className='bg-indigo-600 hover:bg-indigo-500 text-white font-bold tracking-wider px-10 py-2.5 rounded-full shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all cursor-pointer'>Logout</button>
     </div>
   )
 }
