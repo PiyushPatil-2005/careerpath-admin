@@ -20,6 +20,12 @@ const MentorProfile = () => {
   const updateProfile = async () => {
 
     try {
+      if (!profileData.about || profileData.about.trim().length < 10) {
+        return toast.error("About section must be at least 10 characters long")
+      }
+      for (const s of profileData.sessions) {
+        if (s.fee < 0) return toast.error("Session fees cannot be negative")
+      }
 
       const updateData = {
         about: profileData.about,
@@ -59,6 +65,12 @@ const MentorProfile = () => {
 
   const createAnnouncement = async () => {
     try {
+      if (!title || title.trim().length < 3) {
+        return toast.error("Announcement title must be at least 3 characters long")
+      }
+      if (!message || message.trim().length < 5) {
+        return toast.error("Announcement message must be at least 5 characters long")
+      }
 
       const { data } = await axios.post(
         backendUrl + '/api/mentor/create-announcement',
@@ -262,6 +274,41 @@ const MentorProfile = () => {
             </button>
 
           </div>
+
+          {/* ANNOUNCEMENT FORM */}
+          {showAnnouncementForm && (
+            <div className="mt-8 bg-slate-900/50 p-6 rounded-2xl border border-white/10 animate-fade-up">
+              <p className="font-bold text-lg text-white mb-4 uppercase tracking-widest">
+                Create Announcement
+              </p>
+              <div className="flex flex-col gap-4">
+                <input
+                  type="text"
+                  placeholder="Announcement Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700/50 focus:border-indigo-500 rounded-xl text-white placeholder-slate-500 outline-none focus:ring-1 focus:ring-indigo-500"
+                  minLength="3"
+                  maxLength="100"
+                />
+                <textarea
+                  placeholder="Announcement Message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={4}
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700/50 focus:border-indigo-500 rounded-xl text-white placeholder-slate-500 outline-none focus:ring-1 focus:ring-indigo-500"
+                  minLength="5"
+                  maxLength="500"
+                />
+                <button
+                  onClick={createAnnouncement}
+                  className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-full text-white w-max transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(79,70,229,0.5)]"
+                >
+                  Post Announcement
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* ANNOUNCEMENTS LIST */}
           {announcements.length > 0 && (

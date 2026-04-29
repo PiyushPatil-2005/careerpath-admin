@@ -55,7 +55,7 @@ const Login = () => {
         <p className='text-3xl font-bold m-auto text-white'><span className='text-indigo-400'> {state} </span> Login </p>
         <div className='w-full'>
           <p className='mb-2 font-medium'>Email</p>
-          <input onChange={(e)=>setEmail(e.target.value)} value={email} className='w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-white placeholder-slate-500 transition-all' type="text"  required/>
+          <input onChange={(e)=>setEmail(e.target.value)} value={email} className='w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-white placeholder-slate-500 transition-all' type="email"  required/>
         </div>
         <div className='w-full'>
           <p className='mb-2 font-medium'>Password</p>

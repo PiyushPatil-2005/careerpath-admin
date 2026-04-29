@@ -44,6 +44,21 @@ const AddMentor = () => {
         return toast.error('Image Not Selected')
       }
 
+      if (name.trim().length < 3) {
+        return toast.error("Name must be at least 3 characters long")
+      }
+      if (password.length < 8) {
+        return toast.error("Password must be at least 8 characters long")
+      }
+      if (phone.length < 10) {
+        return toast.error("Please enter a valid phone number with at least 10 digits")
+      }
+      
+      for (const session of sessions) {
+        if (!session.name.trim()) return toast.error("Session name is required")
+        if (!session.fee) return toast.error("Session fee is required")
+      }
+
       const formData = new FormData()
 
       formData.append('image', menImg)
@@ -115,7 +130,7 @@ const AddMentor = () => {
 
             <div className='flex-1 flex flex-col gap-1.5'>
               <p className='text-sm font-semibold'>Mentor Name</p>
-              <input onChange={(e) => setName(e.target.value)} value={name} className='bg-slate-900/50 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none' type="text" placeholder='Name' required />
+              <input onChange={(e) => setName(e.target.value)} value={name} className='bg-slate-900/50 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none' type="text" placeholder='Name' minLength="3" maxLength="50" required />
             </div>
 
             <div className='flex-1 flex flex-col gap-1.5'>
@@ -125,7 +140,7 @@ const AddMentor = () => {
 
             <div className='flex-1 flex flex-col gap-1.5'>
               <p className='text-sm font-semibold'>Mentor Password</p>
-              <input onChange={(e) => setPassword(e.target.value)} value={password} className='bg-slate-900/50 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none' type="password" placeholder='Password' required />
+              <input onChange={(e) => setPassword(e.target.value)} value={password} className='bg-slate-900/50 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none' type="password" placeholder='Password' minLength="8" required />
             </div>
 
             <div className='flex-1 flex flex-col gap-1.5'>
@@ -144,7 +159,7 @@ const AddMentor = () => {
 
             <div className='flex-1 flex flex-col gap-1.5'>
               <p className='text-sm font-semibold'>Phone Number</p>
-              <input onChange={(e) => setPhone(e.target.value)} value={phone} className='bg-slate-900/50 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none' type="number" placeholder='Phone number' required />
+              <input onChange={(e) => setPhone(e.target.value)} value={phone} className='bg-slate-900/50 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none' type="tel" pattern="[0-9]{10,15}" placeholder='Phone number' required />
             </div>
 
           </div>
