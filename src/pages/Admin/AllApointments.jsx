@@ -2,11 +2,14 @@ import React, { useEffect, useContext } from 'react'
 import { AdminContext } from '../../context/AdminContext'
 import { AppContext } from '../../context/AppContext'
 import { assets } from '../../assets/assets'
+import ConfirmModal from '../../components/ConfirmModal'
+import { useState } from 'react'
 
 const AllApointments = () => {
 
   const { aToken, appointments, getAllAppointments, cancelAppointment } = useContext(AdminContext)
   const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, appointmentId: null })
 
   useEffect(() => {
     if (aToken) {
@@ -62,15 +65,27 @@ const AllApointments = () => {
                 : item.isCompleted
                   ? <p className='text-green-400 text-xs font-bold uppercase tracking-wider bg-green-400/10 px-3 py-1 rounded-full w-max'>Completed</p>
                   : <img
-                      onClick={() => cancelAppointment(item._id)}
-                      className='w-8 p-1.5 rounded-full cursor-pointer bg-red-500/10 hover:bg-red-500/30 transition-colors opacity-80 hover:opacity-100'
-                      src={assets.cancel_icon}
-                      alt=""
-                    />
+                    onClick={() => setConfirmModal({ isOpen: true, appointmentId: item._id })}
+                    className='w-8 p-1.5 rounded-full cursor-pointer bg-red-500/10 hover:bg-red-500/30 transition-colors opacity-80 hover:opacity-100'
+                    src={assets.cancel_icon}
+                    alt=""
+                  />
             }
           </div>
         ))}
       </div>
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, appointmentId: null })}
+        onConfirm={() => {
+          if (confirmModal.appointmentId) cancelAppointment(confirmModal.appointmentId);
+        }}
+        title="Cancel Appointment"
+        message="Are you sure you want to cancel this counselling session? This action cannot be undone."
+        confirmText="Cancel Session"
+        isDestructive={true}
+      />
     </div>
   )
 }
